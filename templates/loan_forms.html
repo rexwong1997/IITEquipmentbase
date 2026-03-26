@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📂 Loan Forms Record</h2>
+    <a href="{{ url_for('loan_return') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Manual Loan</a>
+</div>
+
+<!-- PART 1: Pending Requests -->
+{% if pending %}
+<h5 class="text-warning mb-3"><i class="fas fa-hourglass-half me-2"></i>Pending Requests</h5>
+<div class="row mb-5">
+    {% for form in pending %}
+    <div class="col-md-6 col-xl-4 mb-4">
+        <div class="card h-100 border-warning shadow-sm">
+            <div class="card-header bg-warning-subtle d-flex justify-content-between align-items-center">
+                <strong><i class="fas fa-file-alt me-2"></i># {{ form.id }}</strong>
+                <span class="badge bg-warning text-dark">Pending</span>
+            </div>
+            <div class="card-body p-3">
+                <div class="mb-3 small">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Expected Loan:</span>
+                        <strong>{{ form.loan_dt }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Expected Return:</span>
+                        <strong>{{ form.return_dt }}</strong>
+                    </div>
+                </div>
+                <div class="bg-light p-2 rounded border" style="max-height: 120px; overflow-y: auto;">
+                    <ul class="list-unstyled mb-0 small">
+                        {% for item in form.item_list %}
+                        <li class="d-flex justify-content-between border-bottom py-1">
+                            <span>{{ item.name }}</span>
+                            <span class="fw-bold">x {{ item.qty }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card-footer bg-white text-end border-top-0 d-flex justify-content-between align-items-center">
+                <small class="text-muted">Total Items: {{ form.count }}</small>
+                <div>
+                    <a href="{{ url_for('process_request', request_id=form.id, action='reject') }}" 
+                       class="btn btn-sm btn-outline-danger" onclick="return confirm('Reject this request?');">
+                       <i class="fas fa-times"></i>
+                    </a>
+                    <a href="{{ url_for('process_request', request_id=form.id, action='approve') }}" 
+                       class="btn btn-sm btn-success" title="Mark as Processed">
+                       <i class="fas fa-check"></i> Done
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<hr>
+{% endif %}
+
+<!-- PART 2: Loan History -->
+<h5 class="text-secondary mb-3"><i class="fas fa-history me-2"></i>Loan History</h5>
+{% if history %}
+    <div class="row">
+        {% for form_num, details in history.items() %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm {% if details.is_complete %}border-success{% else %}border-primary{% endif %}">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center pt-3">
+                    <div>
+                        <h5 class="mb-0 fw-bold">
+                            {% if details.is_complete %}
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                            {% else %}
+                                <i class="fas fa-clock text-primary me-2"></i>
+                            {% endif %}
+                            {{ details.id }}
+                        </h5>
+                        <small class="text-muted">Loan Date: {{ details.loan_dt }}</small>
+                    </div>
+                    {% if details.is_complete %}
+                        <span class="badge bg-success">Complete</span>
+                    {% else %}
+                        <span class="badge bg-primary">Active</span>
+                    {% endif %}
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-sm table-striped mb-0" style="font-size: 0.9rem;">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-3">Item</th>
+                                <th>ID</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in details.item_list %}
+                            <tr>
+                                <td class="ps-3"><strong>{{ item.Name }}</strong><br><small class="text-muted">{{ item.Brand }}</small></td>
+                                <td><span class="text-muted">{{ item.Equipment_ID }}</span></td>
+                                <td>
+                                    {% if item.Status == 'Returned' %}
+                                        <span class="text-success"><i class="fas fa-check"></i> {{ item.Return_Date }}</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Out</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer bg-light text-end">
+                    <small class="text-muted">Total Count: {{ details.count }}</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    {% if not pending %}
+    <div class="alert alert-info text-center py-5">
+        <h4>No loan history found.</h4>
+    </div>
+    {% endif %}
+{% endif %}
+{% endblock %}
