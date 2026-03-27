@@ -100,7 +100,7 @@
             </div>
 
             <div class="row g-2">
-                {% for cat in ['Lights', 'Camera', 'MIC', 'Audio', 'VR Headset', 'Stabilizer', 'Tripod', 'Filter', 'Lens', 'Lighting Set', 'Lighting Tripod', 'Others'] %}
+                {% for cat in['Lighting', 'MIC', 'Audio', 'Camera', 'Lens', 'Tripod', 'Stage Lights', 'Stands', 'Stabilizer', 'VR Headset', 'Others'] %}
                 {% set icon_url = get_icon_path('cat', cat) %}
                 <div class="col-4 col-md-2">
                     <a href="{{ url_for('dashboard', category=cat) }}" 
