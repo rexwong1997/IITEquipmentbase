@@ -42,8 +42,8 @@ def utility_processor():
 def fetch_brands(category_filter='ALL'):
     conn = get_db()
     known_categories = [
-        'Lights', 'Camera', 'MIC', 'Audio', 'MICs (Recording Studio)', 'VR Headset',
-        'Stabilizer', 'Tripod', 'Filter', 'Lens', 'Lighting Set', 'Lighting Tripod'
+        'Lighting', 'MIC', 'Audio', 'Camera', 'Lens', 
+        'Tripod', 'Stage Lights', 'Stands', 'Stabilizer', 'VR Headset'
     ]
     try:
         if category_filter != 'ALL':
@@ -77,8 +77,8 @@ def fetch_equipment_data(availability='All', equipment_type='ALL', category_filt
     params = []
     
     known_categories = [
-        'Lights', 'Camera', 'Digital Tablet', 'Audio', 'MICs (Recording Studio)', 'VR Headset',
-        'Stabilizer', 'Tripod', 'Filter', 'Lens', 'Lighting Set', 'Lighting Tripod'
+        'Lighting', 'MIC', 'Audio', 'Camera', 'Lens', 
+        'Tripod', 'Stage Lights', 'Stands', 'Stabilizer', 'VR Headset'
     ]
 
     if availability != 'All':
@@ -412,7 +412,7 @@ def loan_forms():
 def upload_images():
     if 'user' not in session: return redirect(url_for('dashboard'))
     brands = fetch_brands('ALL')
-    categories = ['Lights', 'Camera', 'Digital Tablet', 'Audio', 'VR Headset', 'Stabilizer', 'Tripod', 'Filter', 'Lens', 'Lighting Set', 'Lighting Tripod', 'Others']
+    categories = ['Lighting', 'MIC', 'Audio', 'Camera', 'Lens', 'Tripod', 'Stage Lights', 'Stands', 'Stabilizer', 'VR Headset', 'Others']
     conn = get_db()
     items_df = pd.read_sql_query("SELECT Equipment_ID, Name FROM Equipment_List ORDER BY Name", conn)
     all_items = items_df.to_dict(orient='records')
