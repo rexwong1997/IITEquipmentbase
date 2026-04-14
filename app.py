@@ -136,7 +136,7 @@ def index():
 def login_action():
     name = request.form.get('name')
     password = request.form.get('password')
-    if password == "1112":
+    if password == "0000":
         session['user'] = name
         flash(f'Welcome back, {name}!', 'success')
     else:
